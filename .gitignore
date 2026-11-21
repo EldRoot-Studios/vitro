@@ -1,0 +1,32 @@
+# Compiled binaries & build intermediates
+bin/
+_obj/
+*.exe
+*.o
+*.obj
+*.part
+
+# Python packaging & caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+_test_tmp/
+
+# Generated trace / dump / media outputs
+*.vtdump
+*.vtdemo
+!samples/*.vtdump
+!samples/*.vtdemo
+*.png
+recent*.txt
+*.recent.txt
+shots/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
