@@ -4,6 +4,8 @@ Visual trace inspector and 3D generation player for PyTorch models.
 
 Vitro captures forward passes and autoregressive generation from PyTorch and HuggingFace transformers into compact binary files (.vtdump and .vtdemo), then renders them in two standalone Windows C++ programs (Win32 and GDI, static build, no Python or GPU needed to inspect saved traces).
 
+![T5-small 3D generation replay](assets/t5_demo_3d.png)
+
 ## Included sample traces
 
 Ready-to-open traces recorded from real pretrained text models live in samples/:
@@ -15,6 +17,20 @@ Open them directly after building:
 
     bin/vitro_view.exe samples/t5_small.vtdump
     bin/vitro_demo.exe samples/qwen3_0_6b.vtdemo
+
+Qwen3-0.6B 28-layer step-by-step generation replay in vitro_demo.exe:
+
+![Qwen3-0.6B 3D generation replay](assets/qwen3_demo_3d.png)
+
+T5-small backward attention rollout (3D Net view) and 6x8 cross-attention grid in vitro_view.exe:
+
+![T5-small 3D attention rollout](assets/t5_net_rollout.png)
+
+![T5-small cross-attention grid](assets/t5_cross_attn.png)
+
+Qwen3-0.6B token surprisal strip, span annotations, and top-5 candidates (Tokens view):
+
+![Qwen3-0.6B token probabilities and spans](assets/qwen3_tokens.png)
 
 ## Viewer and player
 
@@ -80,6 +96,7 @@ CLI helpers:
     cpp/src/          vitro_view.exe and vitro_demo.exe sources
     examples/         Causal, encoder-decoder, and HuggingFace text scripts
     samples/          Pre-recorded .vtdump and .vtdemo traces from real text models
+    assets/           Screenshots used in README.md
     tests/            End-to-end verification suite
 
 ## Tests

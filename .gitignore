@@ -21,6 +21,8 @@ _test_tmp/
 !samples/*.vtdump
 !samples/*.vtdemo
 *.png
+!assets/
+!assets/*.png
 recent*.txt
 *.recent.txt
 shots/
