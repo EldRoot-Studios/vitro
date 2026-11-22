@@ -12,6 +12,11 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+# the built web app is committed: bin/vitro.exe is built from it without Node
+!web/dist/
+web/node_modules/
+# downloaded build dependencies (the WebView2 SDK)
+_deps/
 .pytest_cache/
 _test_tmp/
 

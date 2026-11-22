@@ -1,0 +1,8 @@
+# Text files are LF in the working tree on every system: build.sh and the generated resources must not gain CRs.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.woff2 binary
+*.vtdump binary
+*.vtdemo binary
+*.exe binary

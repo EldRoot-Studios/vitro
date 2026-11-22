@@ -9,12 +9,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
+import test_app  # noqa: E402
 import test_container  # noqa: E402
 import test_demo  # noqa: E402
 import test_leak_audit  # noqa: E402
 import test_samples  # noqa: E402
 import test_spec_and_capture  # noqa: E402
 import test_viewer  # noqa: E402
+import test_web  # noqa: E402
 
 
 def main() -> int:
@@ -26,6 +28,8 @@ def main() -> int:
         ('viewer', test_viewer.run),
         ('demo', test_demo.run),
         ('samples', test_samples.run),
+        ('web', test_web.run),
+        ('app', test_app.run),
     ]
     for name, fn in suites:
         s0 = time.time()

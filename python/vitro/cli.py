@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from .container import ContainerFile
+from .webserver import DEFAULT_PORT, serve
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BIN_DIR = os.path.join(ROOT, 'bin')
@@ -43,15 +44,36 @@ def cmd_launch(exe_name: str, extra: list[str]) -> int:
     return subprocess.call([_find_exe(exe_name), *extra])
 
 
+def cmd_app(files: list[str]) -> int:
+    """Opens the app (bin/vitro.exe), with the given trace files, and waits until its window is closed."""
+    return subprocess.call([_find_exe('vitro.exe'), *files])
+
+
+def cmd_web(args) -> int:
+    return serve(args.files, port=args.port, open_browser=not args.no_browser)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog='vitro', description='Glass-box PyTorch trace inspector and 3D player')
     sub = ap.add_subparsers(dest='cmd', required=True)
     inf = sub.add_parser('info', help='Print summary of a .vtdump or .vtdemo file')
     inf.add_argument('file')
-    sub.add_parser('view', help='Launch vitro_view.exe (forward extra args after --)')
-    sub.add_parser('demo', help='Launch vitro_demo.exe (forward extra args after --)')
+    app = sub.add_parser('app', help='Open the Vitro app (bin/vitro.exe): inspector and generation replay in one window')
+    app.add_argument('files', nargs='*', help='.vtdump and/or .vtdemo files to open (the samples are built in)')
+    web = sub.add_parser('web', help='Serve the same app to your browser, for systems without vitro.exe (Linux, macOS)')
+    web.add_argument('files', nargs='*', help='.vtdump and/or .vtdemo files to open (the samples are always listed)')
+    web.add_argument('--port', type=int, default=DEFAULT_PORT, help='port on 127.0.0.1 (default: %(default)s)')
+    web.add_argument('--no-browser', action='store_true', help='only print the address, do not open a browser')
+    sub.add_parser('view', help='Launch the legacy vitro_view.exe (forward extra args after --)')
+    sub.add_parser('demo', help='Launch the legacy vitro_demo.exe (forward extra args after --)')
     sub.add_parser('selftest', help='Run built-in C++ selftest')
     a, rest = ap.parse_known_args(argv)
+    if a.cmd in ('web', 'app') and rest:
+        ap.error(f'unrecognized arguments: {" ".join(rest)}')
+    if a.cmd == 'app':
+        return cmd_app(a.files)
+    if a.cmd == 'web':
+        return cmd_web(a)
     if a.cmd == 'info':
         return cmd_info(a)
     if a.cmd == 'selftest':

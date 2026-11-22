@@ -20,7 +20,9 @@ FORBIDDEN = [
     r'Mesh3D_Project',
     r'\b1017\b',
 ]
-SCAN_EXTS = {'.py', '.cpp', '.hpp', '.h', '.sh', '.md', '.toml', '.txt'}
+SCAN_EXTS = {'.py', '.cpp', '.hpp', '.h', '.sh', '.md', '.toml', '.txt', '.ts', '.tsx', '.css', '.html', '.js', '.mjs'}
+# Folders that are not ours: installed packages, downloaded SDKs, scratch space.
+SKIP_DIRS = ('.git', 'bin', '_obj', '__pycache__', '_test_tmp', 'node_modules', '_deps')
 
 
 def run() -> None:
@@ -28,7 +30,7 @@ def run() -> None:
     pat = re.compile('|'.join(FORBIDDEN), re.IGNORECASE)
     hits: list[str] = []
     for base, dirs, files in os.walk(ROOT):
-        dirs[:] = [d for d in dirs if d not in ('.git', 'bin', '_obj', '__pycache__', '_test_tmp')]
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for fn in files:
             p = os.path.join(base, fn)
             if os.path.abspath(p) == self_path:
