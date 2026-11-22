@@ -2,7 +2,7 @@
  * Design tokens, fonts and the reset.
  *
  * The idea: the picture fills the whole window and the panels lie on it as frosted glass with sharp, cut edges. The
- * interface is the warm grey of Claude Code with off-white ink and one orange accent for what is chosen; the data stays grey: colour lives only in the data (one grey ramp for "how much", a cool steel for the other
+ * interface is a warm grey with off-white ink and one orange accent for what is chosen; the data stays grey: colour lives only in the data (one grey ramp for "how much", a cool steel for the other
  * side of a comparison) and in two muted status marks, green for right and red for wrong. There are no
  * gradients except the legend of a data scale.
  */
@@ -62,7 +62,7 @@
   --warn: #d9b36c;
   --steel: #a2b8d4;
 
-  /* the accent: the orange of Claude. It marks what is chosen or primary; the data itself stays grey and white. */
+  /* the accent: a warm orange. It marks what is chosen or primary; the data itself stays grey and white. */
   --accent: #d97757;
   --accent-hi: #e58d70;
   --accent-ink: #1f1e1d;

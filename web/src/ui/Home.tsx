@@ -60,7 +60,7 @@ export function Home() {
             <Icon name="arrow" size={15} />
           </button>
         )}
-        <div className="foot">Nothing is uploaded: traces are read by your browser and never leave this machine.</div>
+        <div className="foot">Nothing is uploaded: traces are read on this computer and never leave it.</div>
       </div>
     </section>
   );
