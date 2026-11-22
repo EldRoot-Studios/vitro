@@ -1,4 +1,4 @@
-"""Draws the program icon, cpp/res/vitro.ico: the cube of the app (web/public/favicon.svg) on a grey tile.
+"""Draws the program icon, cpp/res/vitro.ico: the cube of the app (web/public/favicon.svg) on a grey tile, its inner edges in the accent.
 
 The icon is committed; run this only to change it. It needs Pillow (`pip install pillow`). Every size is drawn on its
 own at eight times the size and shrunk, so the small ones stay crisp, and stored as PNG inside the .ico, which Windows
@@ -20,6 +20,7 @@ OUT = os.path.join(ROOT, 'cpp', 'res', 'vitro.ico')
 SIZES = (16, 24, 32, 48, 64, 128, 256)
 BG = (38, 38, 36, 255)
 INK = (250, 249, 245, 255)
+ACCENT = (217, 119, 87, 255)
 
 # The geometry of favicon.svg, in its 24 x 24 box.
 OUTLINE = [(12, 3.6), (19.2, 7.8), (19.2, 16.2), (12, 20.4), (4.8, 16.2), (4.8, 7.8)]
@@ -37,15 +38,15 @@ def draw(size: int) -> Image.Image:
     d.rounded_rectangle([0, 0, big - 1, big - 1], radius=TILE_RADIUS * unit, fill=BG)
     width = max(1, round(STROKE * unit))
 
-    def line(points: list[tuple[float, float]], closed: bool = False) -> None:
+    def line(points: list[tuple[float, float]], color, closed: bool = False) -> None:
         pts = [(x * unit, y * unit) for x, y in points] + ([(points[0][0] * unit, points[0][1] * unit)] if closed else [])
-        d.line(pts, fill=INK, width=width, joint='curve')
+        d.line(pts, fill=color, width=width, joint='curve')
         for x, y in pts:  # round joins and caps
-            d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=INK)
+            d.ellipse([x - width / 2, y - width / 2, x + width / 2, y + width / 2], fill=color)
 
-    line(OUTLINE, closed=True)
-    for edge in EDGES:
-        line(edge)
+    line(OUTLINE, INK, closed=True)
+    for edge in EDGES:  # the inner edges are the accent
+        line(edge, ACCENT)
     return img.resize((size, size), Image.Resampling.LANCZOS)
 
 

@@ -47,6 +47,8 @@ export const ERR: RGB = hex('#e87b7b');
 export const WARN: RGB = hex('#d9b36c');
 /** The one cool tint: negative values, the other side of a comparison, cross-attention. */
 export const STEEL: RGB = hex('#a2b8d4');
+/** The accent of the interface (the orange of Claude): the colour of whatever is chosen. */
+export const ACCENT: RGB = hex('#d97757');
 
 const HEAT: readonly RGB[] = ['#1d1d1b', '#3b3b38', '#7d7c76', '#c2c0b6', '#faf9f5'].map(hex);
 const HEAT_STOPS: readonly (readonly [number, RGB])[] = HEAT.map((c, i) => [i / (HEAT.length - 1), c]);

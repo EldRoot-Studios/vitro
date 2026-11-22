@@ -7,7 +7,7 @@
 import { useEffect, useRef, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react';
 
 import { latentCos, maxAbs, tokenText } from '../core/analysis.ts';
-import { COMPONENT_COLORS, css, diverging, hex, mix, similarity } from '../core/colors.ts';
+import { ACCENT, COMPONENT_COLORS, css, diverging, hex, mix, similarity } from '../core/colors.ts';
 import type { NdArray } from '../core/container.ts';
 import type { NormBlock, UnitTrace } from '../core/trace.ts';
 import { selectTokenPatch, selectUnitPatch } from '../state/actions.ts';
@@ -178,8 +178,10 @@ function ActivationsCanvas() {
     }
     const sel = token - nb.rowOffset;
     if (sel >= 0 && sel < R) {
-      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.strokeStyle = css(ACCENT);
+      ctx.lineWidth = 1.5;
       ctx.strokeRect(left + sel * colW - 0.5, top - 3.5, Math.max(1, colW) + 1, L * rowH + 7);
+      ctx.lineWidth = 1;
     }
     if (hv && hv.part === 'norm') {
       ctx.strokeStyle = 'rgba(255,255,255,0.95)';
@@ -241,7 +243,7 @@ function ActivationsCanvas() {
       ctx.fillText(String(row), left - 8, top + ((row + 0.5) * mapH) / S);
     }
     if (latentRow >= 0 && latentRow < S) {
-      ctx.strokeStyle = '#fff';
+      ctx.strokeStyle = css(ACCENT);
       ctx.lineWidth = 1.5;
       ctx.strokeRect(left - 0.5, top + (latentRow * mapH) / S, mapW + 1, Math.max(2, mapH / S));
       ctx.strokeRect(cosX - 0.5, top + (latentRow * cosSize) / S, cosSize + 1, Math.max(2, cosSize / S));

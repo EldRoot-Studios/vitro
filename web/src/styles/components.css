@@ -27,16 +27,16 @@
   gap: 8px;
   height: 34px;
   padding: 0 16px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
-  background: #faf9f5;
-  color: #262624;
+  background: var(--accent);
+  color: var(--accent-ink);
   transition: background 120ms, box-shadow 120ms;
 }
 .btn:hover {
-  background: #fff;
+  background: var(--accent-hi);
 }
 .btn.ghost {
   background: rgba(250, 249, 245, 0.07);
@@ -48,8 +48,9 @@
   background: rgba(250, 249, 245, 0.12);
 }
 .btn.ghost[aria-pressed='true'] {
-  background: rgba(250, 249, 245, 0.16);
+  background: var(--accent-soft);
   color: #fff;
+  box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 
 /* a square icon button */
@@ -60,7 +61,7 @@
   width: 30px;
   height: 30px;
   flex: none;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   color: var(--ink-3);
   transition: background 120ms, color 120ms;
 }
@@ -72,23 +73,24 @@
 .ib[aria-pressed='true'],
 .tbtn[aria-pressed='true'] {
   color: #fff;
-  background: var(--active);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 .tbtn {
   width: 32px;
   height: 32px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   color: var(--ink-2);
 }
 .tbtn.play {
   width: 36px;
   height: 36px;
-  border-radius: 0;
-  background: #faf9f5;
-  color: #262624;
+  border-radius: var(--r-lg);
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 .tbtn.play:hover {
-  background: #fff;
+  background: var(--accent-hi);
 }
 
 /* ---- choices ---- */
@@ -96,13 +98,13 @@
   display: inline-flex;
   gap: 2px;
   padding: 2px;
-  border-radius: 0;
+  border-radius: var(--r-lg);
   background: rgba(250, 249, 245, 0.05);
 }
 .seg button {
   height: 26px;
   padding: 0 11px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   font-size: 12.5px;
   white-space: nowrap;
   color: var(--ink-3);
@@ -112,8 +114,9 @@
   color: var(--ink);
 }
 .seg button[aria-pressed='true'] {
-  background: rgba(250, 249, 245, 0.14);
+  background: var(--accent-soft);
   color: #fff;
+  box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 .seg.full {
   display: flex;
@@ -132,7 +135,7 @@
   min-width: 28px;
   height: 26px;
   padding: 0 8px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   background: rgba(250, 249, 245, 0.06);
   font: 400 11.5px var(--mono);
   color: var(--ink-2);
@@ -144,8 +147,9 @@
   background: rgba(250, 249, 245, 0.11);
 }
 .chip[aria-pressed='true'] {
-  background: rgba(250, 249, 245, 0.18);
+  background: var(--accent-soft);
   color: #fff;
+  box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 
 .badge {
@@ -154,7 +158,7 @@
   gap: 6px;
   height: 22px;
   padding: 0 9px;
-  border-radius: 0;
+  border-radius: var(--r-sm);
   font: 400 11.5px var(--mono);
   color: var(--ink-2);
   background: rgba(250, 249, 245, 0.06);
@@ -272,7 +276,7 @@
   width: calc(100% + 20px);
   padding: 8px 10px;
   margin: 0 -10px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   font-size: 13px;
   color: var(--ink-2);
 }
@@ -298,6 +302,7 @@
 .row[aria-current='true'] {
   background: rgba(250, 249, 245, 0.08);
   color: var(--ink);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 .pair {
   display: grid;
@@ -414,7 +419,7 @@
   left: 0;
   top: 0;
   padding: 7px 11px;
-  border-radius: 0;
+  border-radius: var(--r-ctl);
   font: 400 12px/1.45 var(--mono);
   color: var(--ink);
   white-space: pre;
@@ -438,7 +443,7 @@
 }
 .toast {
   padding: 10px 14px;
-  border-radius: 0;
+  border-radius: var(--r-lg);
   font-size: 13px;
   line-height: 1.45;
   text-align: left;
@@ -556,7 +561,7 @@
   align-items: center;
   gap: 12px;
   padding: 6px 6px 6px 12px;
-  border-radius: 0;
+  border-radius: var(--r-lg);
   background: rgba(250, 249, 245, 0.04);
   font-size: 13px;
 }
@@ -599,7 +604,7 @@ kbd {
   min-width: 22px;
   margin-right: 4px;
   padding: 1px 6px;
-  border-radius: 0;
+  border-radius: var(--r-sm);
   background: rgba(250, 249, 245, 0.08);
   box-shadow: inset 0 -1px 0 rgba(250, 249, 245, 0.08);
   font: 400 11.5px var(--mono);
@@ -615,7 +620,7 @@ kbd {
   gap: 16px;
   margin-top: 24px;
   padding: 14px 14px 14px 18px;
-  border-radius: 0;
+  border-radius: var(--r-lg);
   border: 1px dashed var(--line-2);
   font-size: 13.5px;
   color: var(--ink-2);
@@ -626,8 +631,8 @@ kbd {
   color: var(--ink);
 }
 .drop[data-over] {
-  background: rgba(250, 249, 245, 0.07);
-  border-color: rgba(250, 249, 245, 0.4);
+  background: var(--accent-soft);
+  border-color: var(--accent);
 }
 .runs {
   margin-top: 18px;

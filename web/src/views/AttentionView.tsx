@@ -8,7 +8,7 @@
 import { useEffect, useRef, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 
 import { attnAxes, attnMap, maxOf } from '../core/analysis.ts';
-import { heatGradient } from '../core/colors.ts';
+import { ACCENT, css, heatGradient } from '../core/colors.ts';
 import { selectTokenPatch, selectUnitPatch } from '../state/actions.ts';
 import { app, useApp } from '../state/app.ts';
 import { FONT, ellipsize, fitCanvas, heatPixels, onFontsLoaded, paintPixels } from '../ui/canvas.ts';
@@ -151,8 +151,8 @@ function AttentionCanvas() {
     }
     if (selRow >= 0 && selRow < R) {
       const y = y0 + selRow * ch;
-      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = css(ACCENT);
+      ctx.lineWidth = 1.5;
       ctx.strokeRect(x0 - 1.5, y - 1.5, mapW + 3, ch + 3);
     }
     if (hv && 'r' in hv) {
@@ -193,7 +193,7 @@ function AttentionCanvas() {
         paintPixels(ctx, heatPixels(m, maxOf(m)), R, C, x, y, cellW, cellH);
         const current = ly === layer && hy === head;
         const over = hv && 'layer' in hv && hv.layer === ly && hv.head === hy;
-        ctx.strokeStyle = current ? '#fff' : over ? 'rgba(255,255,255,0.7)' : EDGE;
+        ctx.strokeStyle = current ? css(ACCENT) : over ? 'rgba(255,255,255,0.7)' : EDGE;
         ctx.lineWidth = current ? 2 : 1;
         ctx.strokeRect(x - 0.5, y - 0.5, cellW + 1, cellH + 1);
       }
