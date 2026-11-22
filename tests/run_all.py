@@ -12,6 +12,7 @@ if HERE not in sys.path:
 import test_app  # noqa: E402
 import test_container  # noqa: E402
 import test_demo  # noqa: E402
+import test_demo_site  # noqa: E402
 import test_leak_audit  # noqa: E402
 import test_release  # noqa: E402
 import test_samples  # noqa: E402
@@ -31,6 +32,7 @@ def main() -> int:
         ('demo', test_demo.run),
         ('samples', test_samples.run),
         ('web', test_web.run),
+        ('demo_site', test_demo_site.run),
         ('app', test_app.run),
     ]
     for name, fn in suites:

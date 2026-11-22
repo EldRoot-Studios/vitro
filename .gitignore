@@ -17,6 +17,8 @@ dist/
 web/node_modules/
 # downloaded build dependencies (the WebView2 SDK)
 _deps/
+# the browser demo built by tools/make_demo_site.py (the workflow builds it again on every publication)
+_site/
 .pytest_cache/
 _test_tmp/
 

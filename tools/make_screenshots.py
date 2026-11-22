@@ -6,6 +6,9 @@ of Qwen3-0.6B, 2 and 3 those of T5-small. A position in the replay (`pos`) is co
 read for 8 ticks and then one tick goes to each generated token, for Qwen3 each token takes one tick from the start.
 A replay that is left playing loops, so a still frame needs `playing=0` as well as `pos`.
 
+`social` is the picture of link previews: twice as wide as it is high, which is what social networks crop to and the
+size GitHub asks for a repository's social preview. tools/make_demo_site.py puts it on the browser demo's page.
+
 The pictures are made by the program itself, so they show what it draws and not a mock-up. Every picture is written to
 a scratch file first and replaces its place in assets/ only when it is a PNG of the expected size that is not almost
 empty, so a failed run never leaves a half picture in the repository. Run it after `bash build.sh app`, then look at
@@ -42,7 +45,26 @@ class Picture:
     name: str  # the file in assets/, without .png
     fragment: str  # what to open: '' is the start screen
     wait_ms: int = 1000  # how long the window settles before it is captured
+    size: tuple[int, int] = (WIDTH, HEIGHT)  # width and height of the window's client area, in pixels
+    script: str = ''  # the body of an async function to run in the page first (--eval-file); if it throws, the picture fails
 
+
+# Waits for the workspace and closes its left panel, so that the stage is wide and the panel's list is not cut off by
+# the low window of the link-preview picture. The label is the one the panel's button carries in web/src/ui/Shell.tsx.
+CLOSE_LEFT_PANEL = """\
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const find = () => document.querySelector('button[aria-label="Show or hide the left panel"]');
+const started = Date.now();
+while (find() === null) {
+  if (Date.now() - started > 20000) throw new Error('the button of the left panel did not appear within 20 s');
+  await sleep(50);
+}
+const button = find();
+if (button.getAttribute('aria-pressed') === 'true') button.click();
+await sleep(300);
+if (button.getAttribute('aria-pressed') !== 'false') throw new Error('the left panel did not close');
+return 'closed';
+"""
 
 PICTURES = (
     Picture('home', ''),
@@ -53,6 +75,7 @@ PICTURES = (
     Picture('net', '#open=3,2&view=net&token=7&nplay=0&ntime=3'),
     Picture('replay_t5', '#open=3,2&view=replay&pos=14.5&playing=0'),
     Picture('replay_qwen', '#open=1,0&view=replay&pos=5.5&playing=0'),
+    Picture('social', '#open=3,2&view=replay&pos=14.5&playing=0', size=(1280, 640), script=CLOSE_LEFT_PANEL),
 )
 
 
@@ -67,19 +90,26 @@ def png_size(path: str) -> tuple[int, int]:
 
 def take(picture: Picture, profile: str) -> str:
     """Makes one picture with the program and puts it in assets/. Returns a line for the report."""
+    width, height = picture.size
     scratch = os.path.join(profile, picture.name + '.png')
-    args = [EXE, '--screenshot', scratch, '--size', f'{WIDTH}x{HEIGHT}', '--wait', str(picture.wait_ms), '--timeout', '90000']
+    args = [EXE, '--screenshot', scratch, '--size', f'{width}x{height}', '--wait', str(picture.wait_ms), '--timeout', '90000']
     if picture.fragment:
         args += ['--hash', picture.fragment]
+    if picture.script:
+        script_path = os.path.join(profile, picture.name + '.js')
+        with open(script_path, 'w', encoding='utf-8', newline='\n') as fh:
+            fh.write(picture.script)
+        args += ['--eval-file', script_path]
     env = {**os.environ, 'VITRO_DATA_DIR': os.path.join(profile, 'engine')}
     done = subprocess.run(args, capture_output=True, text=True, encoding='utf-8', env=env, timeout=180)
     if done.returncode != 0:
-        raise SystemExit(f'{picture.name}: vitro.exe exited with {done.returncode}: {done.stderr.strip()}')
+        # a script that threw says so on stdout (as JSON), the program's own errors on stderr
+        raise SystemExit(f'{picture.name}: vitro.exe exited with {done.returncode}: {done.stderr.strip()} {done.stdout.strip()}')
     if not os.path.isfile(scratch):
         raise SystemExit(f'{picture.name}: vitro.exe reported success but made no picture')
     size = png_size(scratch)
-    if size != (WIDTH, HEIGHT):
-        raise SystemExit(f'{picture.name}: the picture is {size[0]}x{size[1]}, expected {WIDTH}x{HEIGHT} (is the display scaled?)')
+    if size != (width, height):
+        raise SystemExit(f'{picture.name}: the picture is {size[0]}x{size[1]}, expected {width}x{height} (is the display scaled?)')
     nbytes = os.path.getsize(scratch)
     if nbytes < MIN_BYTES:
         raise SystemExit(f'{picture.name}: the picture is only {nbytes} bytes, so the window drew almost nothing')
