@@ -1,0 +1,26 @@
+{
+  /* Tests, the build config and the Node scripts. The core modules they import must stay free of the DOM,
+     which is checked here: this configuration has no DOM library. */
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["tests", "vite.config.ts", "src/core", "src/state/state.ts", "src/state/store.ts", "src/state/library.ts", "src/state/actions.ts", "src/state/urlState.ts"]
+}

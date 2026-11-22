@@ -1,0 +1,422 @@
+/*
+ * The shell. The picture fills the window; the top bar, the left panel, the right panel and the bottom controls
+ * lie on it as glass. Which of them exist is told by data attributes on .app, and from them the insets of
+ * .free are computed: the rectangle that is not covered, where DOM views live and where canvas views frame their
+ * content (ui/layout.ts reads it).
+ */
+
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+
+  --free-t: calc(var(--gap) * 2 + var(--bar-h));
+  --free-b: var(--gap);
+  --free-l: var(--gap);
+  --free-r: var(--gap);
+}
+.app[data-rail='true'] {
+  --free-l: calc(var(--gap) * 2 + var(--rail-w));
+}
+.app[data-inspector='true'] {
+  --free-r: calc(var(--gap) * 2 + var(--insp-w));
+}
+.app[data-dock='true'] {
+  --free-b: calc(var(--gap) * 2 + var(--dock-h));
+}
+
+.free {
+  position: absolute;
+  inset: var(--free-t) var(--free-r) var(--free-b) var(--free-l);
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+canvas.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+canvas.scene.orbit {
+  cursor: grab;
+}
+canvas.scene[data-dragging] {
+  cursor: grabbing;
+}
+
+/* a DOM view fills the free area and scrolls inside it */
+.free-scroll {
+  position: absolute;
+  inset: var(--free-t) var(--free-r) var(--free-b) var(--free-l);
+  overflow: auto;
+  padding: 6px 8px 24px;
+}
+
+/* the title that lies on a picture */
+.over {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--free-l) + 8px);
+  top: calc(var(--free-t) + 6px);
+  max-width: calc(100% - var(--free-l) - var(--free-r) - 16px);
+  pointer-events: none;
+}
+.over b {
+  display: block;
+  font: 400 15px var(--sans);
+  letter-spacing: -0.01em;
+}
+.over span {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* ---- top bar ---- */
+.topbar {
+  position: absolute;
+  z-index: 6;
+  left: var(--gap);
+  right: var(--gap);
+  top: var(--gap);
+  height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 12px 0 14px;
+  border-radius: 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.tabs {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink-3);
+  transition: background 120ms, color 120ms;
+}
+.tab:hover {
+  color: var(--ink);
+}
+.tab[aria-selected='true'] {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+}
+.bar-r {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.session {
+  display: inline-block;
+  height: 30px;
+  max-width: 260px;
+  padding: 0 12px;
+  margin-right: 6px;
+  border-radius: 8px;
+  font: 400 12px/30px var(--mono);
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.session:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* ---- panels ---- */
+.pane {
+  position: absolute;
+  z-index: 4;
+  top: var(--free-t);
+  bottom: var(--gap);
+  padding: 20px 18px 16px;
+  border-radius: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.pane.left {
+  left: var(--gap);
+  width: var(--rail-w);
+}
+.pane.right {
+  right: var(--gap);
+  width: var(--insp-w);
+}
+.pane > section + section {
+  margin-top: 4px;
+}
+.pane .empty {
+  position: static;
+  translate: none;
+  width: auto;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ---- bottom controls ---- */
+.dock {
+  position: absolute;
+  z-index: 5;
+  left: var(--free-l);
+  right: var(--free-r);
+  bottom: var(--gap);
+  height: var(--dock-h);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 16px;
+  border-radius: 16px;
+}
+.dock .empty {
+  position: static;
+  translate: none;
+  width: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.tb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+.dock-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dock-group .label {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.dock > .tbtn:last-child {
+  margin-left: auto;
+}
+.tl {
+  position: relative;
+  flex: 1 1 160px;
+  height: 30px;
+  min-width: 0;
+  cursor: pointer;
+  touch-action: none;
+}
+.tl .track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+.tl .track i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5);
+}
+.tl .track i.read {
+  background: rgba(255, 255, 255, 0.22);
+}
+.tl .mark {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--err);
+}
+.tl .head {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: #fff;
+}
+.rate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  font: 400 12px var(--mono);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.speeds {
+  display: flex;
+  gap: 1px;
+}
+.speeds button {
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 7px;
+  font: 400 11.5px var(--mono);
+  color: var(--ink-3);
+}
+.speeds button:hover {
+  color: var(--ink);
+}
+.speeds button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+/* ---- the start screen: a glass card over a network that turns slowly ---- */
+.home {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: var(--bg);
+}
+.home canvas.scene {
+  position: fixed;
+}
+.home-actions {
+  position: fixed;
+  z-index: 3;
+  top: 14px;
+  right: 14px;
+}
+.card {
+  position: relative;
+  z-index: 2;
+  width: min(560px, 100%);
+  padding: 30px 32px 24px;
+  border-radius: 20px;
+}
+.card h1 {
+  font: 300 clamp(30px, 5vw, 38px) / 1.08 var(--sans);
+  letter-spacing: -0.035em;
+  margin-top: 22px;
+}
+.card p {
+  margin-top: 12px;
+  max-width: 46ch;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  text-wrap: pretty;
+}
+.card .back {
+  margin-top: 18px;
+}
+.card .foot {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+/* ---- narrower windows ---- */
+@media (max-width: 1180px) {
+  .app {
+    --dock-h: 96px;
+  }
+  .dock {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 2px;
+    padding: 6px 16px;
+  }
+  .rate {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 1100px) {
+  /* the left panel lies over the picture instead of squeezing it */
+  .app[data-rail='true'] {
+    --free-l: var(--gap);
+  }
+  .pane.left {
+    z-index: 7;
+    background: rgba(18, 19, 22, 0.88);
+  }
+  .session {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .app {
+    --insp-w: 280px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* the right panel becomes a sheet at the bottom */
+  .app {
+    --sheet-h: 36vh;
+    --rail-w: min(244px, calc(100vw - 2 * var(--gap)));
+  }
+  .app[data-inspector='true'] {
+    --free-r: var(--gap);
+    --free-b: calc(var(--gap) * 2 + var(--sheet-h));
+  }
+  .app[data-inspector='true'][data-dock='true'] {
+    --free-b: calc(var(--gap) * 3 + var(--sheet-h) + var(--dock-h));
+  }
+  .pane.right {
+    left: var(--gap);
+    right: var(--gap);
+    top: auto;
+    width: auto;
+    height: var(--sheet-h);
+  }
+  .app[data-inspector='true'] .dock {
+    bottom: calc(var(--gap) * 2 + var(--sheet-h));
+  }
+  .app[data-dock='true']:not([data-inspector='true']) {
+    --free-b: calc(var(--gap) * 2 + var(--dock-h));
+  }
+  .brand {
+    font-size: 0;
+    gap: 0;
+  }
+  .topbar {
+    gap: 8px;
+  }
+  .tab {
+    padding: 0 9px;
+  }
+}

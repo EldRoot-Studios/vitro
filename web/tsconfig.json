@@ -1,0 +1,31 @@
+{
+  /* The app that runs in the browser. Tests, the build config and the Node scripts are checked by
+     tsconfig.node.json: they run in Node, and mixing the two would give the page access to Node's API. */
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Vite builds, tsc only checks. */
+    "noEmit": true,
+    "isolatedModules": true,
+    /* A type must be imported with `import type`, and only syntax that can be erased is allowed (no enums,
+       namespaces or parameter properties): that is what lets Node run the core modules directly, without a
+       build, for the cross-check against NumPy. File extensions are written out for the same reason. */
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
