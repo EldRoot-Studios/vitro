@@ -85,6 +85,19 @@ def run() -> None:
             fh.write(raw[:8] + len(raw_h).to_bytes(8, 'little') + raw_h + b'\0' * (-len(raw_h) % 16) + raw[16 + n + (-n % 16):])
         assert 'version 99' in _raises(ValueError, lambda: ContainerFile(bad_v))
 
+        # a header that is not JSON, not UTF-8 or not an object is refused with the file named (it used to surface as
+        # a bare parser message, or as an AttributeError for a list)
+        for name, text, want in (
+            ('notjson.vtdump', b'{"x":', 'header is not valid JSON'),
+            ('notutf8.vtdump', b'{"v":"\xff\xfe"}', 'header is not valid UTF-8'),
+            ('notobject.vtdump', b'[1,2]', 'header must be a JSON object'),
+        ):
+            odd = os.path.join(tmp, name)
+            with open(odd, 'wb') as fh:
+                fh.write(MAGIC + len(text).to_bytes(8, 'little') + text + b'\0' * (-len(text) % 16))
+            msg = _raises(ValueError, lambda: ContainerFile(odd))
+            assert msg.startswith(f'{odd}: ') and want in msg, msg
+
     print('test_container: all roundtrip, alignment, and refusal checks passed', flush=True)
 
 

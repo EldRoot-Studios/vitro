@@ -102,6 +102,45 @@ def save(path: str, header: dict, writer: Writer, magic: bytes = MAGIC) -> None:
         raise
 
 
+def _header_length(path: str, prefix, file_size: int, magic: bytes, wrong_magic_msg: str) -> int:
+    """Checks the first 16 bytes of a container and returns the length of its JSON header."""
+    if len(prefix) < 16:
+        raise ValueError(f'{path}: truncated file (less than 16 bytes)')
+    if bytes(prefix[:8]) != magic:
+        raise ValueError(f'{path}: {wrong_magic_msg}')
+    hl = int.from_bytes(prefix[8:16], 'little')
+    if hl == 0 or 16 + hl > file_size:
+        raise ValueError(f'{path}: header says {hl} bytes, file has {file_size - 16}')
+    return hl
+
+
+def _decode_header(path: str, raw: bytes) -> dict:
+    """Parses the JSON header and checks the container version; every refusal names the file."""
+    try:
+        header = json.loads(raw.decode('utf-8'))
+    except UnicodeDecodeError as e:
+        raise ValueError(f'{path}: header is not valid UTF-8 ({e})') from e
+    except json.JSONDecodeError as e:
+        raise ValueError(f'{path}: header is not valid JSON ({e})') from e
+    if not isinstance(header, dict):
+        raise ValueError(f'{path}: header must be a JSON object')
+    if header.get('version') != VERSION:
+        raise ValueError(f'{path}: container version {header.get("version")}, expected {VERSION}')
+    return header
+
+
+def read_header(path: str, magic: bytes = MAGIC, wrong_magic_msg: str = 'not a Vitro trace file') -> dict:
+    """Reads and validates only the JSON header of a container, leaving the tensors on disk.
+
+    Raises ValueError with the same messages as ContainerFile; the file is opened read-only.
+    """
+    with open(path, 'rb') as fh:
+        prefix = fh.read(16)
+        hl = _header_length(path, prefix, os.fstat(fh.fileno()).st_size, magic, wrong_magic_msg)
+        raw = fh.read(hl)
+    return _decode_header(path, raw)
+
+
 class ContainerFile:
     """Validates and maps a trace container file, offering zero-copy read-only numpy views."""
 
@@ -109,16 +148,8 @@ class ContainerFile:
         self.path = path
         with open(path, 'rb') as fh:
             self._buf = memoryview(fh.read())
-        if len(self._buf) < 16:
-            raise ValueError(f'{path}: truncated file (less than 16 bytes)')
-        if bytes(self._buf[:8]) != magic:
-            raise ValueError(f'{path}: {wrong_magic_msg}')
-        hl = int.from_bytes(self._buf[8:16], 'little')
-        if hl == 0 or 16 + hl > len(self._buf):
-            raise ValueError(f'{path}: header says {hl} bytes, file has {len(self._buf) - 16}')
-        self.header = json.loads(bytes(self._buf[16:16 + hl]).decode('utf-8'))
-        if self.header.get('version') != VERSION:
-            raise ValueError(f'{path}: container version {self.header.get("version")}, expected {VERSION}')
+        hl = _header_length(path, self._buf[:16], len(self._buf), magic, wrong_magic_msg)
+        self.header = _decode_header(path, bytes(self._buf[16:16 + hl]))
         self._data_at = 16 + hl + _pad(hl)
         self.data_size = len(self._buf) - self._data_at
         if self.data_size < 0:
