@@ -1,59 +1,106 @@
-# Vitro
+<p align="center">
+  <img src="web/public/favicon.svg" width="88" alt="Vitro">
+</p>
 
-A glass-box inspector for PyTorch models. Vitro captures forward passes and autoregressive generation from PyTorch and HuggingFace transformers into compact binary files (.vtdump and .vtdemo), and opens them in **one app, `vitro.exe`**: tokens with their probabilities, attention, activations, labelled spans, a 3D view of the network with the path a prediction took, and a step-by-step 3D replay of a generation.
+<h1 align="center">Vitro</h1>
 
-![T5-small 3D generation replay](assets/t5_demo_3d.png)
+<p align="center">
+  <b>A glass-box inspector for PyTorch models.</b><br>
+  Every token and its probability, every attention head, the activations, and the path a prediction took through the network, in one small Windows program.
+</p>
 
-## The app
+<p align="center">
+  <a href="https://github.com/EldRoot-Studios/vitro/releases/latest/download/vitro.exe"><b>Download vitro.exe</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/EldRoot-Studios/vitro/releases/latest">Release notes</a>
+  &nbsp;·&nbsp;
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
 
-`vitro.exe` is a single Windows program of about 6 MB. Its interface is a web app (React, in `web/`) shown in the program's own window by the Microsoft Edge engine that Windows already has (WebView2). There is no server and no browser: the program carries the app, the sample traces and the licence notices inside itself, and the traces you open are read in the window and never uploaded.
+<p align="center">
+  <a href="https://github.com/EldRoot-Studios/vitro/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/EldRoot-Studios/vitro?color=d97757&label=release"></a>
+  <img alt="Windows 10 and 11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-30302e">
+  <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/github/license/EldRoot-Studios/vitro?color=30302e"></a>
+</p>
 
-    bin\vitro.exe                                          the start screen, with the sample traces
-    bin\vitro.exe samples\t5_small.vtdump samples\t5_small.vtdemo   open the two files of one run
+<p align="center">
+  <img src="assets/replay_t5.png" alt="Vitro replaying, step by step in 3D, how T5-small translates a sentence into French: the network, the generated tokens and the top candidates of the step" width="920">
+</p>
 
-A dump (.vtdump) powers the inspector tabs and a recording (.vtdemo) the replay; open both files of one run to use every tab. Files can also be dropped on the window or on the program's icon, chosen with the picker (O), or listed on the command line. `vitro.exe --help` lists the options.
+Vitro records a forward pass, or a whole autoregressive generation, of a PyTorch or HuggingFace transformers model into two compact binary files (`.vtdump` for the inspector, `.vtdemo` for the replay) and opens them in **one app**: tokens with their probabilities, attention, activations, labelled spans, a 3D view of the network with the path a prediction took, and a step-by-step 3D replay of a generation.
 
-The six tabs (keys 1 to 6):
+## Get Vitro
 
-1. **Tokens**: the target sequence against the free rollout, user-labelled spans, surprisal, rank, entropy or numeric-error colours, and per-token top-K probabilities. Arrow keys step through tokens, E jumps to the next top-1 miss, D to the first divergence.
-2. **Attention**: a heat map per layer and head with a switcher across all attention families of the model (encoder self, decoder self, cross-attention, ...), the mean over layers and heads, and a page of all layers by heads.
-3. **Activations**: L2 activation norms across layers and sublayers, plus any 2D latent maps with their cosine similarity.
-4. **Spans**: the labelled token intervals as a nested list, with the cost of each in bits and misses.
-5. **3D Net**: the stage graph built from the trace, with a backward attention rollout from the selected token lighting the path that led to its prediction.
-6. **Replay**: playback from reading the input context through each generated token at 0.25x to 16x speed, lighting the attention paths into each candidate. Space plays and pauses, the arrows step.
+**Windows 10 and 11.** Download [`vitro.exe`](https://github.com/EldRoot-Studios/vitro/releases/latest/download/vitro.exe) from the latest release and double-click it. It is one file of about 6 MB: no installer, no server, no browser. The app, the sample traces and the licence notices are inside it, and the traces you open are read in the window and never uploaded. It needs the Microsoft Edge WebView2 Runtime, which comes with Windows 11 and current Windows 10. The program is not code-signed, so Windows SmartScreen may ask you to confirm the first start; the SHA-256 of every release file is in the release notes.
 
-Press ? in the app for every key. S saves the picture of the open view as a PNG; the view you left is kept in the address of the window, so a view can be reproduced with `--hash`.
-
-![T5-small backward attention rollout](assets/t5_net_rollout.png)
-
-![T5-small cross-attention, all layers by heads](assets/t5_cross_attn.png)
-
-![Qwen3-0.6B token probabilities and spans](assets/qwen3_tokens.png)
-
-![Qwen3-0.6B 3D generation replay](assets/qwen3_demo_3d.png)
-
-### Build
-
-    bash build.sh app          builds bin/vitro.exe
-
-You need MinGW-w64 g++ (MSYS2) and Python 3. The first build downloads the Microsoft WebView2 SDK, pinned to one version and checked against its SHA-256 (`tools/fetch_webview2.py`). The program is built from `web/dist`, which is committed, so Node is needed only to change the interface: `cd web && npm install && npm run build` renews `web/dist`, and `npm test` runs the interface tests.
-
-### In a browser, on any system
+**Linux and macOS.** In a clone of this repository (after installing the package, see below), `vitro web` serves the same app on 127.0.0.1 and opens it in your browser; nothing leaves your machine.
 
     vitro web samples/t5_small.vtdump samples/t5_small.vtdemo
 
-serves the same app on 127.0.0.1 (nothing leaves your machine) and opens it in your browser. This is the way to use Vitro on Linux and macOS.
+## A tour of the six tabs
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="assets/tokens.png" alt="The Tokens tab: a Qwen3-0.6B continuation coloured by surprisal, with the top candidates of the selected token">
+      <br><b>1. Tokens</b><br>
+      The target sequence against the free rollout, with user-labelled spans, surprisal, rank, entropy or numeric-error colours, and the top-K probabilities of every token. The arrow keys step through the tokens, <kbd>E</kbd> jumps to the next top-1 miss, <kbd>D</kbd> to the first divergence.
+    </td>
+    <td width="50%" valign="top">
+      <img src="assets/attention.png" alt="The Attention tab: the cross-attention of T5-small, every layer by every head">
+      <br><b>2. Attention</b><br>
+      A heat map per layer and head, a switcher across all attention families of the model (encoder self, decoder self, cross-attention, ...), the mean over layers and heads, and a page of all layers by heads.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="assets/activations.png" alt="The Activations tab: the norms of the T5-small decoder, layer by token">
+      <br><b>3. Activations</b><br>
+      L2 activation norms across layers and sublayers, and any 2D latent maps with their cosine similarity.
+    </td>
+    <td width="50%" valign="top">
+      <img src="assets/spans.png" alt="The Spans tab: the labelled token intervals of the T5-small run">
+      <br><b>4. Spans</b><br>
+      The labelled token intervals as a nested list, with the cost of each in bits and misses.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="assets/net.png" alt="The 3D Net tab: the stage graph of T5-small with the attention rollout of one token lit">
+      <br><b>5. 3D Net</b><br>
+      The stage graph built from the trace, with a backward attention rollout from the selected token lighting the path that led to its prediction.
+    </td>
+    <td width="50%" valign="top">
+      <img src="assets/replay_qwen.png" alt="The Replay tab: Qwen3-0.6B generating a continuation token by token">
+      <br><b>6. Replay</b><br>
+      Playback from reading the input context through each generated token at 0.25x to 16x speed, lighting the attention paths into each candidate. <kbd>Space</kbd> plays and pauses, the arrows step.
+    </td>
+  </tr>
+</table>
+
+## Open a trace
+
+    vitro.exe                                                     the start screen, with the sample traces
+    vitro.exe samples\t5_small.vtdump samples\t5_small.vtdemo     open the two files of one run
+
+<p align="center">
+  <img src="assets/home.png" alt="The start screen: a card with a drop zone, a file picker and the two sample runs, over a slowly turning network" width="640">
+</p>
+
+A dump (`.vtdump`) powers the inspector tabs and a recording (`.vtdemo`) the replay; open both files of one run to use every tab. Files can also be dropped on the window or on the program's icon, chosen with the picker (<kbd>O</kbd>), or listed on the command line. `vitro.exe --help` lists the options.
+
+Keys <kbd>1</kbd> to <kbd>6</kbd> switch the tabs, <kbd>S</kbd> saves the open view as a PNG, and <kbd>?</kbd> shows every key. The view you left is kept in the address of the window, so a view can be reproduced with `--hash`, which is how the pictures above were made (`tools/make_screenshots.py`).
 
 ## Included sample traces
 
-Ready-to-open traces recorded from real pretrained text models live in samples/ (and are built into vitro.exe):
+Ready-to-open traces recorded from real pretrained text models live in `samples/` (and are built into `vitro.exe`):
 
-- samples/t5_small.vtdump and samples/t5_small.vtdemo: google-t5/t5-small translating "The glass box reveals every layer." into French (6 encoder layers, 6 decoder layers, cross-attention).
-- samples/qwen3_0_6b.vtdump and samples/qwen3_0_6b.vtdemo: Qwen/Qwen3-0.6B autoregressive causal continuation (28 layers).
+- `samples/t5_small.vtdump` and `samples/t5_small.vtdemo`: google-t5/t5-small translating "The glass box reveals every layer." into French (6 encoder layers, 6 decoder layers, cross-attention).
+- `samples/qwen3_0_6b.vtdump` and `samples/qwen3_0_6b.vtdemo`: Qwen/Qwen3-0.6B autoregressive causal continuation (28 layers).
 
 ## Tracing a PyTorch model
 
-Install the Python package in editable mode:
+Install the Python package from a clone, in editable mode (or use the wheel attached to a release):
 
     pip install -e . --no-build-isolation
 
@@ -82,9 +129,9 @@ Minimal example with custom stage, span, and vocabulary labels:
     export_dump("my_trace.vtdump", trace, spec=spec, free_tokens=[demo.ftok], free_probs=[demo.fp])
     export_demo("my_trace.vtdemo", demo, spec=spec, vocab_size=model.config.vocab_size)
 
-auto_adapter supports custom causal decoders (DecoderOnlyAdapter), nn.Transformer encoder-decoder models (EncoderDecoderAdapter), and HuggingFace CausalLM / Seq2Seq models offline (HuggingFaceAdapter, automatically switching subconfigs to eager attention so attention weights can be captured).
+`auto_adapter` supports custom causal decoders (`DecoderOnlyAdapter`), `nn.Transformer` encoder-decoder models (`EncoderDecoderAdapter`), and HuggingFace CausalLM / Seq2Seq models offline (`HuggingFaceAdapter`, automatically switching subconfigs to eager attention so attention weights can be captured).
 
-Runnable examples live in examples/: tiny_decoder_only.py, tiny_encoder_decoder.py, and hf_text_transformer.py (for local HuggingFace text models such as google-t5/t5-small and Qwen/Qwen3-0.6B).
+Runnable examples live in `examples/`: `tiny_decoder_only.py`, `tiny_encoder_decoder.py`, and `hf_text_transformer.py` (for local HuggingFace text models such as google-t5/t5-small and Qwen/Qwen3-0.6B).
 
 CLI helpers:
 
@@ -94,6 +141,25 @@ CLI helpers:
 
 The older programs `vitro_view.exe` (inspector) and `vitro_demo.exe` (player) are still built by `bash build.sh` and reachable as `vitro view` and `vitro demo`; `vitro.exe` replaces both.
 
+## Build from source
+
+    bash build.sh app          builds bin/vitro.exe
+
+You need MinGW-w64 g++ (MSYS2) and Python 3. The first build downloads the Microsoft WebView2 SDK, pinned to one version and checked against its SHA-256 (`tools/fetch_webview2.py`). The program is built from `web/dist`, which is committed, so Node is needed only to change the interface: `cd web && npm install && npm run build` renews `web/dist`, and `npm test` runs the interface tests. How the program is put together: its interface is a web app (React, in `web/`) shown in the program's own window by the Microsoft Edge engine that Windows already has (WebView2); a small C++ host answers the page's requests itself (the library of traces, the trace files, the app's files), so there is no server.
+
+## Troubleshooting
+
+**`cannot write ...\AppData\Local\Vitro\...`** The program unpacks a small helper library and keeps the window engine's profile (about 20 MB) in `%LOCALAPPDATA%\Vitro`. If that disk is full or the folder is read-only, free some space, or point Vitro at a folder on another disk with `VITRO_DATA_DIR`:
+
+    set VITRO_DATA_DIR=D:\VitroData
+    vitro.exe
+
+In PowerShell, set it with `$env:VITRO_DATA_DIR = 'D:\VitroData'` instead.
+
+**The window does not open.** Check that the Microsoft Edge WebView2 Runtime is installed. It comes with Windows 11 and current Windows 10; on an older system, install the Evergreen runtime from Microsoft.
+
+**"Windows protected your PC".** `vitro.exe` is not code-signed. Choose *More info*, then *Run anyway*, or compare the SHA-256 of the file with the one in the release notes first.
+
 ## Repository layout
 
     python/vitro/       Python capture hooks, PyTorch & HuggingFace adapters, trace specs, binary container, CLI, web server
@@ -101,13 +167,12 @@ The older programs `vitro_view.exe` (inspector) and `vitro_demo.exe` (player) ar
     cpp/src/app_*       vitro.exe: the window, the WebView2 host, the built-in resources and the library of traces
     cpp/include/vitro/  Reusable C++ headers (binary container reader, JSON parser, Win32 shell, GDI canvas, 3D helpers)
     cpp/src/view_*      The older vitro_view.exe and vitro_demo.exe
-    tools/              Build helpers: the WebView2 SDK download, the resources of vitro.exe, the icon
+    tools/              Build helpers: the WebView2 SDK download, the resources of vitro.exe, the icon, the README pictures
     examples/           Causal, encoder-decoder, and HuggingFace text scripts
     samples/            Pre-recorded .vtdump and .vtdemo traces from real text models
-    assets/             Screenshots used in README.md
+    assets/             Pictures used in README.md, made by tools/make_screenshots.py
     tests/              End-to-end verification suite
-
-Third-party components inside vitro.exe (the WebView2 loader, the Geist typefaces, React) are listed with their licences in THIRD_PARTY_NOTICES.txt; `vitro.exe --licenses` prints them.
+    CHANGELOG.md        What changed in each release
 
 ## Tests
 
@@ -115,4 +180,8 @@ Run all checks:
 
     python tests/run_all.py
 
-They cover the container format (round trips and refusals), hook parity across causal, seq2seq, and HuggingFace models, the older programs (selftest, NumPy digest parity, PNG rendering, UI events, window loop), real sample traces, a leak audit, and for the app: the web server and its refusals, the interface's TypeScript tests (vitest), the browser reader against NumPy on every sample (numbers to 1e-9, every float16 pattern, the words of every refusal), the committed `web/dist` against a fresh build, and the real `vitro.exe` with its real window (command line, what the page can fetch, six views, replay, screenshot). The parts that need Node or Pillow say so when they are skipped.
+They cover the container format (round trips and refusals), hook parity across causal, seq2seq, and HuggingFace models, the older programs (selftest, NumPy digest parity, PNG rendering, UI events, window loop), real sample traces, a leak audit, release hygiene (one version in every file that states it, and a changelog entry for it), and for the app: the web server and its refusals, the interface's TypeScript tests (vitest), the browser reader against NumPy on every sample (numbers to 1e-9, every float16 pattern, the words of every refusal), the committed `web/dist` against a fresh build, and the real `vitro.exe` with its real window (command line, what the page can fetch, six views, replay, screenshot). The parts that need Node or Pillow say so when they are skipped.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE). Third-party components inside `vitro.exe` (the WebView2 loader, the Geist typefaces, React) are listed with their licences in [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt); `vitro.exe --licenses` prints them.
