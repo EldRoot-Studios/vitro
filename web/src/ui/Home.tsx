@@ -1,12 +1,14 @@
 /**
  * The start screen: a glass card over a slowly turning network, a place to drop files, and the sample runs.
- * It is also where the brand mark leads back to, with a way to continue the session that is open.
+ * It is also where the brand mark leads back to, with a way to continue the session that is open. On the hosted
+ * browser demo it also links to the project.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { app, useApp } from '../state/app.ts';
 import { fitCanvas, onFontsLoaded } from './canvas.ts';
+import { demoHomepage } from './demo.ts';
 import { drawHomeScene } from './homeScene.ts';
 import { Icon, Logo } from './icons.tsx';
 import { reducedMotion, useLoop } from './loop.ts';
@@ -16,6 +18,7 @@ export function Home() {
   const hasTrace = useApp((s) => s.dump !== null || s.demo !== null);
   const title = useApp((s) => (s.dump ?? s.demo)?.title ?? '');
   const library = useApp((s) => s.library);
+  const demo = useMemo(() => demoHomepage(document), []);
   const canvas = useRef<HTMLCanvasElement>(null);
   const still = useRef(reducedMotion());
   const start = useRef(performance.now());
@@ -61,6 +64,18 @@ export function Home() {
           </button>
         )}
         <div className="foot">Nothing is uploaded: traces are read on this computer and never leave it.</div>
+        {demo && (
+          <div className="foot">
+            Browser demo ·{' '}
+            <a href={`${demo}/releases/latest`} target="_blank" rel="noopener noreferrer">
+              Get the Windows app
+            </a>{' '}
+            ·{' '}
+            <a href={demo} target="_blank" rel="noopener noreferrer">
+              Source on GitHub
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );
