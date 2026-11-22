@@ -2,6 +2,14 @@
 
 All notable changes to Vitro are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- A browser demo on GitHub Pages, for every system: the app with the two sample runs built in, at https://eldroot-studios.github.io/vitro/. Choose your own trace files on its start screen; they are read in the page and never uploaded. A link such as `#open=3,2&view=net&token=7` opens a given view directly. It is built by `tools/make_demo_site.py` and published by a workflow on every change to the app or the samples.
+- On the start screen of the demo, links to the Windows download and to the source.
+- `tools/make_screenshots.py` makes the 2:1 picture of link previews (`assets/social.png`) and can run a script in the page before a picture.
+
 ## [0.2.0] - 2026-11-22
 
 A new look, and one program instead of two.
@@ -33,5 +41,6 @@ A new look, and one program instead of two.
 
 First release: a visual trace inspector (`vitro_view.exe`, five views) and a step-by-step 3D generation player (`vitro_demo.exe`) for PyTorch and HuggingFace models, the `vitro-trace` Python package that records `.vtdump` and `.vtdemo` files, and two sample runs (T5-small and Qwen3-0.6B).
 
+[Unreleased]: https://github.com/EldRoot-Studios/vitro/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/EldRoot-Studios/vitro/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/EldRoot-Studios/vitro/releases/tag/v0.1.0

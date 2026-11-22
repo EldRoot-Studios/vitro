@@ -6,10 +6,12 @@
 
 <p align="center">
   <b>A glass-box inspector for PyTorch models.</b><br>
-  Every token and its probability, every attention head, the activations, and the path a prediction took through the network, in one small Windows program.
+  Every token and its probability, every attention head, the activations, and the path a prediction took through the network, in one small Windows program or in your browser.
 </p>
 
 <p align="center">
+  <a href="https://eldroot-studios.github.io/vitro/"><b>Try it in your browser</b></a>
+  &nbsp;·&nbsp;
   <a href="https://github.com/EldRoot-Studios/vitro/releases/latest/download/vitro.exe"><b>Download vitro.exe</b></a>
   &nbsp;·&nbsp;
   <a href="https://github.com/EldRoot-Studios/vitro/releases/latest">Release notes</a>
@@ -19,6 +21,7 @@
 
 <p align="center">
   <a href="https://github.com/EldRoot-Studios/vitro/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/EldRoot-Studios/vitro?color=d97757&label=release"></a>
+  <a href="https://eldroot-studios.github.io/vitro/"><img alt="Browser demo" src="https://img.shields.io/badge/demo-in%20your%20browser-d97757"></a>
   <img alt="Windows 10 and 11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-30302e">
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/github/license/EldRoot-Studios/vitro?color=30302e"></a>
 </p>
@@ -31,9 +34,11 @@ Vitro records a forward pass, or a whole autoregressive generation, of a PyTorch
 
 ## Get Vitro
 
+**In your browser, on any system.** Open the [browser demo](https://eldroot-studios.github.io/vitro/): the two sample runs are built in, and you can choose your own `.vtdump` and `.vtdemo` files on its start screen. They are read in the page and never uploaded. Some views to start from: [the replay of T5-small translating a sentence](https://eldroot-studios.github.io/vitro/#open=3,2&view=replay), [the 3D net with the path that led to the word "verre"](https://eldroot-studios.github.io/vitro/#open=3,2&view=net&token=7), [the attention of every layer and head](https://eldroot-studios.github.io/vitro/#open=3,2&view=attention&token=7&fam=2&grid=1) and [the tokens of a Qwen3-0.6B continuation](https://eldroot-studios.github.io/vitro/#open=1,0&view=tokens&token=3). The demo is built for a computer screen; on a phone the start screen works, but the views are cramped.
+
 **Windows 10 and 11.** Download [`vitro.exe`](https://github.com/EldRoot-Studios/vitro/releases/latest/download/vitro.exe) from the latest release and double-click it. It is one file of about 6 MB: no installer, no server, no browser. The app, the sample traces and the licence notices are inside it, and the traces you open are read in the window and never uploaded. It needs the Microsoft Edge WebView2 Runtime, which comes with Windows 11 and current Windows 10. The program is not code-signed, so Windows SmartScreen may ask you to confirm the first start; the SHA-256 of every release file is in the release notes.
 
-**Linux and macOS.** In a clone of this repository (after installing the package, see below), `vitro web` serves the same app on 127.0.0.1 and opens it in your browser; nothing leaves your machine.
+**Linux and macOS, on your own machine.** In a clone of this repository (after installing the package, see below), `vitro web` serves the same app on 127.0.0.1 and opens it in your browser; nothing leaves your machine.
 
     vitro web samples/t5_small.vtdump samples/t5_small.vtdemo
 
@@ -147,6 +152,8 @@ The older programs `vitro_view.exe` (inspector) and `vitro_demo.exe` (player) ar
 
 You need MinGW-w64 g++ (MSYS2) and Python 3. The first build downloads the Microsoft WebView2 SDK, pinned to one version and checked against its SHA-256 (`tools/fetch_webview2.py`). The program is built from `web/dist`, which is committed, so Node is needed only to change the interface: `cd web && npm install && npm run build` renews `web/dist`, and `npm test` runs the interface tests. How the program is put together: its interface is a web app (React, in `web/`) shown in the program's own window by the Microsoft Edge engine that Windows already has (WebView2); a small C++ host answers the page's requests itself (the library of traces, the trace files, the app's files), so there is no server.
 
+The browser demo is made from `web/dist`, `samples/` and `assets/social.png` by `python tools/make_demo_site.py --out _site`. The workflow `.github/workflows/demo.yml` checks that builder and publishes the result to GitHub Pages on every change to those files.
+
 ## Troubleshooting
 
 **`cannot write ...\AppData\Local\Vitro\...`** The program unpacks a small helper library and keeps the window engine's profile (about 20 MB) in `%LOCALAPPDATA%\Vitro`. If that disk is full or the folder is read-only, free some space, or point Vitro at a folder on another disk with `VITRO_DATA_DIR`:
@@ -167,10 +174,11 @@ In PowerShell, set it with `$env:VITRO_DATA_DIR = 'D:\VitroData'` instead.
     cpp/src/app_*       vitro.exe: the window, the WebView2 host, the built-in resources and the library of traces
     cpp/include/vitro/  Reusable C++ headers (binary container reader, JSON parser, Win32 shell, GDI canvas, 3D helpers)
     cpp/src/view_*      The older vitro_view.exe and vitro_demo.exe
-    tools/              Build helpers: the WebView2 SDK download, the resources of vitro.exe, the icon, the README pictures
+    tools/              Build helpers: the WebView2 SDK download, the resources of vitro.exe, the icon, the README pictures, the browser demo's builder
+    .github/workflows/  The workflow that publishes the browser demo to GitHub Pages
     examples/           Causal, encoder-decoder, and HuggingFace text scripts
     samples/            Pre-recorded .vtdump and .vtdemo traces from real text models
-    assets/             Pictures used in README.md, made by tools/make_screenshots.py
+    assets/             Pictures used in README.md and in link previews, made by tools/make_screenshots.py
     tests/              End-to-end verification suite
     CHANGELOG.md        What changed in each release
 
@@ -180,7 +188,7 @@ Run all checks:
 
     python tests/run_all.py
 
-They cover the container format (round trips and refusals), hook parity across causal, seq2seq, and HuggingFace models, the older programs (selftest, NumPy digest parity, PNG rendering, UI events, window loop), real sample traces, a leak audit, release hygiene (one version in every file that states it, and a changelog entry for it), and for the app: the web server and its refusals, the interface's TypeScript tests (vitest), the browser reader against NumPy on every sample (numbers to 1e-9, every float16 pattern, the words of every refusal), the committed `web/dist` against a fresh build, and the real `vitro.exe` with its real window (command line, what the page can fetch, six views, replay, screenshot). The parts that need Node or Pillow say so when they are skipped.
+They cover the container format (round trips and refusals), hook parity across causal, seq2seq, and HuggingFace models, the older programs (selftest, NumPy digest parity, PNG rendering, UI events, window loop), real sample traces, a leak audit, release hygiene (one version in every file that states it, and a changelog entry for it), the builder of the browser demo (the site it writes against the app and the samples, and its refusals), and for the app: the web server and its refusals, the interface's TypeScript tests (vitest), the browser reader against NumPy on every sample (numbers to 1e-9, every float16 pattern, the words of every refusal), the committed `web/dist` against a fresh build, and the real `vitro.exe` with its real window (command line, what the page can fetch, six views, replay, screenshot). The parts that need Node or Pillow say so when they are skipped.
 
 ## Licence
 
