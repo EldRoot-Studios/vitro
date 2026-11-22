@@ -20,6 +20,7 @@ import glob
 import hashlib
 import json
 import os
+import re
 import shutil
 import struct
 import subprocess
@@ -85,12 +86,20 @@ def sha256_of(path: str) -> str:
         return hashlib.sha256(fh.read()).hexdigest()
 
 
+def declared_version() -> str:
+    """The version written in pyproject.toml: the one `bash build.sh app` builds into the program."""
+    with open(os.path.join(ROOT, 'pyproject.toml'), encoding='utf-8') as fh:
+        found = re.search(r'^version *= *"([^"]+)"', fh.read(), re.MULTILINE)
+    assert found, 'pyproject.toml has no version line'
+    return found.group(1)
+
+
 # ---- the command line ----
 
 
 def check_command_line(tmp: str) -> None:
     r = run_app(tmp, '--version')
-    assert r.returncode == 0 and r.stdout.startswith('vitro 0.1.0 (WebView2 SDK 1.0.'), r.stdout
+    assert r.returncode == 0 and r.stdout.startswith(f'vitro {declared_version()} (WebView2 SDK 1.0.'), r.stdout
     r = run_app(tmp, '--help')
     assert r.returncode == 0 and 'usage: vitro.exe' in r.stdout and '--eval-file' in r.stdout, r.stdout
     r = run_app(tmp, '--licenses')

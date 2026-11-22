@@ -13,6 +13,7 @@ import test_app  # noqa: E402
 import test_container  # noqa: E402
 import test_demo  # noqa: E402
 import test_leak_audit  # noqa: E402
+import test_release  # noqa: E402
 import test_samples  # noqa: E402
 import test_spec_and_capture  # noqa: E402
 import test_viewer  # noqa: E402
@@ -23,6 +24,7 @@ def main() -> int:
     t0 = time.time()
     suites = [
         ('leak_audit', test_leak_audit.run),
+        ('release', test_release.run),
         ('container', test_container.run),
         ('spec_and_capture', test_spec_and_capture.run),
         ('viewer', test_viewer.run),

@@ -1,7 +1,7 @@
 {
   "name": "vitro-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Vitro web app: one window for the trace inspector and the generation replay. The built app (dist/) is what `vitro web` serves; Node is needed to develop it, not to use it.",
   "engines": {

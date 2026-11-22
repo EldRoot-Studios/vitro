@@ -11,7 +11,7 @@ import importlib
 from .container import ContainerFile, MAGIC, Writer, save
 from .spec import LinkSpec, SpanLabel, StageSpec, TokenMeta, TraceSpec
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 # Public names that need PyTorch, mapped to the submodule that defines them.
 _LAZY = {
