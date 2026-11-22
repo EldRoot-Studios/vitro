@@ -29,14 +29,14 @@ function traceKey(trace: object): number {
   return id;
 }
 
-/** Saves a canvas as a PNG on the black of the app; the scene canvases are transparent. */
+/** Saves a canvas as a PNG on the grey of the app; the scene canvases are transparent. */
 function saveCanvas(canvas: HTMLCanvasElement, filename: string): void {
   const out = document.createElement('canvas');
   out.width = canvas.width;
   out.height = canvas.height;
   const ctx = out.getContext('2d');
   if (!ctx) throw new Error('this browser cannot draw on a canvas');
-  ctx.fillStyle = '#050506';
+  ctx.fillStyle = '#262624';
   ctx.fillRect(0, 0, out.width, out.height);
   ctx.drawImage(canvas, 0, 0);
   out.toBlob((blob) => {

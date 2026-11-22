@@ -536,7 +536,7 @@ private:
         wc.hIcon = LoadIconW(instance, MAKEINTRESOURCEW(1));
         wc.hIconSm = wc.hIcon;
         wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-        wc.hbrBackground = CreateSolidBrush(RGB(5, 5, 6));  // the app's black, so the first moments are not white
+        wc.hbrBackground = CreateSolidBrush(RGB(38, 38, 36));  // the app's grey, so the first moments are not white
         wc.lpszClassName = L"VitroWindow";
         if (!RegisterClassExW(&wc)) throw std::runtime_error("cannot register the window class (Windows error " + std::to_string(GetLastError()) + ")");
         const DWORD style = WS_OVERLAPPEDWINDOW;
@@ -555,8 +555,8 @@ private:
         // the call fails and the bar stays light, which is fine.
         const BOOL dark = TRUE;
         DwmSetWindowAttribute(hwnd_, 20 /* DWMWA_USE_IMMERSIVE_DARK_MODE */, &dark, sizeof dark);
-        const COLORREF caption = RGB(5, 5, 6);
-        const COLORREF text = RGB(244, 244, 245);
+        const COLORREF caption = RGB(38, 38, 36);
+        const COLORREF text = RGB(250, 249, 245);
         DwmSetWindowAttribute(hwnd_, 35 /* DWMWA_CAPTION_COLOR */, &caption, sizeof caption);
         DwmSetWindowAttribute(hwnd_, 36 /* DWMWA_TEXT_COLOR */, &text, sizeof text);
         ShowWindow(hwnd_, SW_SHOWNORMAL);
@@ -633,8 +633,8 @@ private:
             return S_OK;
         }
         if (auto c2 = controller_.as<ICoreWebView2Controller2>()) {
-            const COREWEBVIEW2_COLOR black = {255, 5, 5, 6};
-            c2->put_DefaultBackgroundColor(black);
+            const COREWEBVIEW2_COLOR grey = {255, 38, 38, 36};
+            c2->put_DefaultBackgroundColor(grey);
         }
         configure_settings();
         resize();

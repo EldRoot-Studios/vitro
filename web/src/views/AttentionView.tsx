@@ -20,9 +20,9 @@ import { Chips, Facts, Heading, Seg } from '../ui/parts.tsx';
 import { tooltip } from '../ui/tooltip.ts';
 import { compact, useResizeRedraw, useUnit, vars } from './hooks.ts';
 
-const INK = 'rgba(244,244,245,0.86)';
-const INK3 = 'rgba(244,244,245,0.5)';
-const INK4 = 'rgba(244,244,245,0.32)';
+const INK = 'rgba(250,249,245,0.86)';
+const INK3 = 'rgba(250,249,245,0.5)';
+const INK4 = 'rgba(250,249,245,0.32)';
 const EDGE = 'rgba(255,255,255,0.14)';
 
 const layerText = (layer: number): string => (layer < 0 ? 'layer mean' : `layer ${layer + 1}`);

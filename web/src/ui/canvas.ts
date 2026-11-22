@@ -106,7 +106,7 @@ const HEAT_LUT: Uint8ClampedArray = (() => {
 })();
 
 /** Colour of a cell with no value (NaN): a hair above the background so the matrix keeps its shape. */
-const EMPTY_CELL: readonly number[] = [20, 21, 24];
+const EMPTY_CELL: readonly number[] = [29, 29, 27];
 
 /**
  * RGBA pixels for a matrix on the heat ramp: value / vmax, raised to `gamma` to lift weak values.

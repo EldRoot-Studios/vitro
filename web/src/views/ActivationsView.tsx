@@ -21,11 +21,11 @@ import { Facts, Heading, Seg } from '../ui/parts.tsx';
 import { tooltip } from '../ui/tooltip.ts';
 import { compact, useResizeRedraw, useUnit } from './hooks.ts';
 
-const INK = 'rgba(244,244,245,0.86)';
-const INK3 = 'rgba(244,244,245,0.5)';
-const INK4 = 'rgba(244,244,245,0.32)';
+const INK = 'rgba(250,249,245,0.86)';
+const INK3 = 'rgba(250,249,245,0.5)';
+const INK4 = 'rgba(250,249,245,0.32)';
 const EDGE = 'rgba(255,255,255,0.14)';
-const BAND_BG = hex('#16171a');
+const BAND_BG = hex('#1d1d1b');
 const TITLE_H = 26;
 
 const maxCache = new WeakMap<NdArray, number>();

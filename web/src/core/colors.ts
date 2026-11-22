@@ -1,8 +1,8 @@
 /**
  * Colour ramps and named tints.
  *
- * Colours are [r, g, b] triples with channels 0..255. The interface has no colour of its own: it is black and
- * white glass. Colour lives only in the data, and even there it is quiet: one grey ramp ("heat") carries every
+ * Colours are [r, g, b] triples with channels 0..255. The interface has no colour of its own: it is grey and
+ * off-white glass. Colour lives only in the data, and even there it is quiet: one grey ramp ("heat") carries every
  * "how much" quantity (attention weight, surprisal, activation), muted status colours say right or wrong, and a
  * single cool grey-blue is the "other side" (negative values, cross-attention).
  */
@@ -41,14 +41,14 @@ export function ramp(stops: readonly (readonly [number, Colour])[], t: number): 
 }
 
 export const WHITE: RGB = [255, 255, 255];
-export const INK: RGB = hex('#f4f4f5');
+export const INK: RGB = hex('#faf9f5');
 export const OK: RGB = hex('#7fcf9f');
 export const ERR: RGB = hex('#e87b7b');
 export const WARN: RGB = hex('#d9b36c');
 /** The one cool tint: negative values, the other side of a comparison, cross-attention. */
 export const STEEL: RGB = hex('#a2b8d4');
 
-const HEAT: readonly RGB[] = ['#0b0c0e', '#2a2c31', '#6d7078', '#b9bcc4', '#ffffff'].map(hex);
+const HEAT: readonly RGB[] = ['#1d1d1b', '#3b3b38', '#7d7c76', '#c2c0b6', '#faf9f5'].map(hex);
 const HEAT_STOPS: readonly (readonly [number, RGB])[] = HEAT.map((c, i) => [i / (HEAT.length - 1), c]);
 
 /** The one "how much" ramp, black to white in grey; t in 0..1. Luminance rises with t. */
@@ -87,7 +87,7 @@ export function deltaError(steps: number, redAt = 12): RGB {
   );
 }
 
-const NEUTRAL: RGB = hex('#15161a');
+const NEUTRAL: RGB = hex('#1d1d1b');
 
 /** Signed values in -1..1: steel below zero, near-black at zero, white above. */
 export function diverging(t: number): RGB {
@@ -98,13 +98,13 @@ export function diverging(t: number): RGB {
 /** Cosine similarity in -1..1: the heat ramp for aligned vectors, steel for opposite ones. */
 export function similarity(c: number): RGB {
   const v = Math.min(Math.max(c, -1), 1);
-  return v >= 0 ? heat(v) : mix(hex('#0b0c0e'), STEEL, -v);
+  return v >= 0 ? heat(v) : mix(hex('#1d1d1b'), STEEL, -v);
 }
 
 /** Readable text colour for a given background. */
 export function textOn(bg: Colour): RGB {
   const lum = (bg[0] * 299 + bg[1] * 587 + bg[2] * 114) / 1000;
-  return lum > 140 ? hex('#0b0c0e') : INK;
+  return lum > 140 ? hex('#1d1d1b') : INK;
 }
 
 /** Relative luminance 0..1 (Rec. 709 weights), used to check that a ramp is monotone. */
@@ -124,7 +124,7 @@ export const TINTS: Record<string, RGB> = {
 };
 
 /** Used for a span or link that names no tint. */
-export const PLAIN_TINT: RGB = hex('#c9c9cf');
+export const PLAIN_TINT: RGB = hex('#cbc9bf');
 
 /** Resolves a tint name or "#rrggbb"; anything else gives `fallback`. */
 export function parseTint(s: string, fallback: Colour): RGB {

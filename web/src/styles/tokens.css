@@ -1,8 +1,8 @@
 /*
  * Design tokens, fonts and the reset.
  *
- * The idea: the picture fills the whole window and the panels lie on it as frosted glass. The interface is
- * black and white; colour lives only in the data (one grey ramp for "how much", a cool steel for the other
+ * The idea: the picture fills the whole window and the panels lie on it as frosted glass with sharp, cut edges. The
+ * interface is the warm grey of Claude Code with off-white ink; colour lives only in the data (one grey ramp for "how much", a cool steel for the other
  * side of a comparison) and in two muted status marks, green for right and red for wrong. There are no
  * gradients except the legend of a data scale.
  */
@@ -44,16 +44,19 @@
 :root {
   color-scheme: dark;
 
-  --bg: #050506;
-  --ink: #f4f4f5;
-  --ink-2: rgba(244, 244, 245, 0.64);
-  --ink-3: rgba(244, 244, 245, 0.42);
-  --ink-4: rgba(244, 244, 245, 0.26);
-  --line: rgba(255, 255, 255, 0.08);
-  --line-2: rgba(255, 255, 255, 0.15);
-  --glass: rgba(22, 23, 26, 0.56);
-  --hover: rgba(255, 255, 255, 0.06);
-  --active: rgba(255, 255, 255, 0.1);
+  --bg: #262624;
+  --ink: #faf9f5;
+  --ink-2: rgba(250, 249, 245, 0.74);
+  --ink-3: rgba(250, 249, 245, 0.54);
+  --ink-4: rgba(250, 249, 245, 0.36);
+  --line: rgba(222, 220, 209, 0.14);
+  --line-2: rgba(222, 220, 209, 0.36);
+  --glass: rgba(48, 48, 46, 0.64);
+  /* the cut edge of a glass pane: lit along the top and left, shaded along the bottom and right */
+  --edge-hi: rgba(250, 249, 245, 0.3);
+  --edge-lo: rgba(0, 0, 0, 0.32);
+  --hover: rgba(250, 249, 245, 0.07);
+  --active: rgba(250, 249, 245, 0.13);
   --ok: #7fcf9f;
   --err: #e87b7b;
   --warn: #d9b36c;

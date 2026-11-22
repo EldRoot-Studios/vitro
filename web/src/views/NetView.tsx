@@ -75,14 +75,14 @@ export function NetStage() {
       let alpha;
       if (kind === EDGE.RESID && imp < 0.12) {
         color = NET_BASE;
-        alpha = 0.016 * boost * gain;
+        alpha = 0.022 * boost * gain;
       } else if (imp < 0.1) {
         color = net.tints[edges.tint[e]];
-        alpha = (0.03 + 0.1 * Math.sqrt(Math.min(1, edges.w[e]))) * boost * gain;
+        alpha = (0.04 + 0.12 * Math.sqrt(Math.min(1, edges.w[e]))) * boost * gain;
       } else {
         const g = imp ** 0.9;
         color = mix(net.tints[edges.tint[e]], NET_WHITE, Math.min(1, g * 0.7));
-        alpha = (0.07 + 0.6 * g) * boost * (kind === EDGE.RESID ? 0.5 : 1);
+        alpha = (0.09 + 0.62 * g) * boost * (kind === EDGE.RESID ? 0.5 : 1);
       }
       addLine(ctx, proj.x[a], proj.y[a], proj.x[b], proj.y[b], color, Math.min(1, alpha));
       if (!faint && imp ** 0.9 > 0.7) addLine(ctx, proj.x[a] + 1, proj.y[a], proj.x[b] + 1, proj.y[b], color, Math.min(1, alpha * 0.6));
@@ -131,7 +131,7 @@ export function NetStage() {
     ctx.textAlign = 'left';
     for (let o = 0; o < net.count[net.sOut]; o++) {
       const i = net.outFirst + o;
-      ctx.fillStyle = i === net.trueOut ? '#7fcf9f' : 'rgba(244,244,245,0.78)';
+      ctx.fillStyle = i === net.trueOut ? '#7fcf9f' : 'rgba(250,249,245,0.82)';
       ctx.fillText(compact(dump.label(nodes.idx[i])), proj.x[i] + 11, proj.y[i]);
     }
     const hv = hovered.current;

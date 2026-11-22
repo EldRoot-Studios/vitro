@@ -91,7 +91,7 @@ export function drawHomeScene(ctx: CanvasRenderingContext2D, view: Rect, t: numb
   for (let e = 0; e < net.a.length; e++) {
     const stageOfEdge = net.stage[net.b[e]];
     const boost = 1 + 1.6 * Math.exp(-((stageOfEdge - 0.5 - wave) ** 2) / 1.4);
-    addLine(ctx, s.x[net.a[e]], s.y[net.a[e]], s.x[net.b[e]], s.y[net.b[e]], WHITE, (0.035 + 0.1 * net.w[e]) * boost * 0.75);
+    addLine(ctx, s.x[net.a[e]], s.y[net.a[e]], s.x[net.b[e]], s.y[net.b[e]], WHITE, (0.045 + 0.11 * net.w[e]) * boost * 0.8);
   }
   for (let i = 0; i < net.n; i++) {
     const lit = Math.exp(-((net.stage[i] - wave) ** 2) / 1.6);

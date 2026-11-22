@@ -133,8 +133,8 @@ export function drawBrackets(ctx: CanvasRenderingContext2D, cam: Camera3D, group
   groups.forEach((g, i) => {
     cam.map(stageX[g.a], -162, 0, p);
     cam.map(stageX[g.b], -162, 0, q);
-    ctx.strokeStyle = lit[i] ? 'rgba(255,255,255,0.9)' : 'rgba(244,244,245,0.26)';
-    ctx.fillStyle = lit[i] ? '#ffffff' : 'rgba(244,244,245,0.42)';
+    ctx.strokeStyle = lit[i] ? 'rgba(255,255,255,0.9)' : 'rgba(250,249,245,0.26)';
+    ctx.fillStyle = lit[i] ? '#ffffff' : 'rgba(250,249,245,0.42)';
     ctx.beginPath();
     ctx.moveTo(p[0], p[1]);
     ctx.lineTo(q[0], q[1]);

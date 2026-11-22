@@ -1,4 +1,4 @@
-"""Draws the program icon, cpp/res/vitro.ico: the cube of the app (web/public/favicon.svg) on a dark tile.
+"""Draws the program icon, cpp/res/vitro.ico: the cube of the app (web/public/favicon.svg) on a grey tile.
 
 The icon is committed; run this only to change it. It needs Pillow (`pip install pillow`). Every size is drawn on its
 own at eight times the size and shrunk, so the small ones stay crisp, and stored as PNG inside the .ico, which Windows
@@ -18,8 +18,8 @@ from PIL import Image, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'cpp', 'res', 'vitro.ico')
 SIZES = (16, 24, 32, 48, 64, 128, 256)
-BG = (5, 5, 6, 255)
-INK = (244, 244, 245, 255)
+BG = (38, 38, 36, 255)
+INK = (250, 249, 245, 255)
 
 # The geometry of favicon.svg, in its 24 x 24 box.
 OUTLINE = [(12, 3.6), (19.2, 7.8), (19.2, 16.2), (12, 20.4), (4.8, 16.2), (4.8, 7.8)]

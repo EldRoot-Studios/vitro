@@ -11,8 +11,8 @@ import { NET_CAMERA } from '../state/state.ts';
 import { createStore } from '../state/store.ts';
 
 /** Colours of the net: a quiet grey-white for what the prediction did not lean on, white for what it did. */
-export const NET_BASE: RGB = hex('#d6d6dc');
-export const NET_OUT_OTHER: RGB = hex('#e8e8ec');
+export const NET_BASE: RGB = hex('#d9d7cd');
+export const NET_OUT_OTHER: RGB = hex('#ecebe4');
 export const NET_OK: RGB = OK;
 export const NET_WHITE: RGB = WHITE;
 

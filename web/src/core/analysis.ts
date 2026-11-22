@@ -64,7 +64,7 @@ export function topId(dump: TraceDump, unit: UnitTrace, j: number): number {
 
 /** Cell colour of target token `j` and whether the model's top-1 prediction missed it. */
 export function cellColor(dump: TraceDump, unit: UnitTrace, j: number, mode: ColorMode): { color: RGB; wrong: boolean } {
-  if (j < unit.t0) return { color: hex('#16171a'), wrong: false };
+  if (j < unit.t0) return { color: hex('#1d1d1b'), wrong: false };
   const rank = unit.rank[j];
   const wrong = rank > 1;
   if (mode === 'surprisal') return { color: surprisal(bitsOf(unit.p[j])), wrong };

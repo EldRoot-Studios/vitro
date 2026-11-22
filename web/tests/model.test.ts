@@ -261,8 +261,8 @@ test('heat ramp rises in luminance, and the other ramps keep their ends', () => 
     expect(l, `luminance must not fall at t=${i / 200}`).toBeGreaterThanOrEqual(prev - 1e-9);
     prev = l;
   }
-  expect(luminance(heat(0)), 'the ramp starts at near-black').toBeLessThan(0.06);
-  expect(luminance(heat(1)), 'and ends at white').toBeGreaterThan(0.99);
+  expect(luminance(heat(0)), 'the ramp starts at a dark grey').toBeLessThan(0.13);
+  expect(luminance(heat(1)), 'and ends at an off-white').toBeGreaterThan(0.95);
   expect(surprisal(0)).toEqual(heat(0));
   expect(surprisal(50)).toEqual(heat(1));
   expect(deltaError(0)).toEqual(hex('#275a52'));
@@ -272,8 +272,8 @@ test('heat ramp rises in luminance, and the other ramps keep their ends', () => 
   expect(parseTint('nonsense', [1, 2, 3])).toEqual([1, 2, 3]);
   expect(parseTint('', [1, 2, 3])).toEqual([1, 2, 3]);
   expect(parseTint('constructor', [1, 2, 3])).toEqual([1, 2, 3]);
-  expect(textOn(hex('#000000'))).toEqual(hex('#f4f4f5'));
-  expect(textOn(hex('#ffffff'))).toEqual(hex('#0b0c0e'));
+  expect(textOn(hex('#000000'))).toEqual(hex('#faf9f5'));
+  expect(textOn(hex('#ffffff'))).toEqual(hex('#1d1d1b'));
   expect(() => hex('red')).toThrow(RangeError);
 });
 

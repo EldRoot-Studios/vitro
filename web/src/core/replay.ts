@@ -204,7 +204,7 @@ export function composeFrame(demo: TraceDemo, sg: Segment, scene: Scene, now: No
       a: scene.edges.a[e],
       b: scene.edges.b[e],
       color: scene.edges.tint[e],
-      alpha: Math.min(0.9, (0.03 + 0.14 * Math.sqrt(Math.min(1, scene.edges.w[e]))) * boost),
+      alpha: Math.min(0.9, (0.04 + 0.15 * Math.sqrt(Math.min(1, scene.edges.w[e]))) * boost),
     });
   }
 

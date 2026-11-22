@@ -90,7 +90,7 @@ export function ReplayStage() {
     ctx.textAlign = 'left';
     for (const hl of frame.halos) {
       if (hl.label === undefined) continue;
-      ctx.fillStyle = hl.labelDim ? 'rgba(244,244,245,0.6)' : css(hl.color);
+      ctx.fillStyle = hl.labelDim ? 'rgba(250,249,245,0.6)' : css(hl.color);
       ctx.fillText(oneLine(hl.label), proj.x[hl.node] + 11, proj.y[hl.node]);
     }
     drawBrackets(ctx, cam, sc.groups, sc.stageX, frame.groupLit);
@@ -317,8 +317,8 @@ export function ReplayDock() {
   );
 }
 
-const CONTEXT_CELL: RGB = hex('#1a1b1f');
-const MISSED_CELL: RGB = hex('#4a2227');
+const CONTEXT_CELL: RGB = hex('#1d1d1b');
+const MISSED_CELL: RGB = hex('#5a2a2c');
 
 /** The panel: the written tokens as a strip, and the step that is being written (or the reading progress). */
 export function ReplayInspector() {
